@@ -407,7 +407,7 @@ function App() {
           </div>
         </div>
 
-        {/* PASO 3 - UPSALE 4K-8K (improved) */}
+        {/* PASO 3 - ESCALAR A 4K-8K (with clear Before/After as requested) */}
         <div className="mb-20">
           <div className="flex gap-4 items-baseline mb-6">
             <div className="text-[72px] font-semibold text-highlight leading-none tracking-[-3px]">03</div>
@@ -419,6 +419,57 @@ function App() {
             Sin resolución 4K+, las herramientas de movimiento generan artefactos, pixelado y se nota la IA al instante.
           </p>
 
+          {/* BEFORE / AFTER - Low quality vs High quality upscale */}
+          <div className="premium-card p-8 mb-8">
+            <div className="text-xs uppercase tracking-[2px] text-neutral mb-4">EL PROBLEMA Y LA SOLUCIÓN</div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* ANTES - Mala calidad */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xs font-semibold tracking-wider text-red-600">ANTES</span>
+                  <span className="text-xs text-neutral">— Baja resolución / Artefactos</span>
+                </div>
+                <div className="relative rounded-2xl overflow-hidden border border-[#d9d3c7] bg-[#f8f5f0] aspect-[16/10]">
+                  <img 
+                    src="/assets/images/3.jpeg" 
+                    alt="Antes - Baja resolución" 
+                    className="w-full h-full object-cover opacity-70" 
+                  />
+                  {/* Visual indicator of bad quality */}
+                  <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,#00000010_0,#00000010_4px,#00000000_4px,#00000000_12px)]"></div>
+                  <div className="absolute bottom-3 left-3 bg-black/70 text-white text-[10px] px-2 py-0.5 rounded">
+                    Pixelado • Artefactos • Se nota IA
+                  </div>
+                </div>
+              </div>
+
+              {/* DESPUÉS - Alta calidad con upscale */}
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="text-xs font-semibold tracking-wider text-[#006b5b]">DESPUÉS</span>
+                  <span className="text-xs text-neutral">— 4K-8K Upscale</span>
+                </div>
+                <div className="relative rounded-2xl overflow-hidden border border-[#006b5b]/40 shadow-lg bg-[#f8f5f0] aspect-[16/10]">
+                  <img 
+                    src="/assets/images/Detalle_de_Upscale__An_extreme_202605251403.jpeg" 
+                    alt="Después - Alta resolución" 
+                    className="w-full h-full object-cover" 
+                  />
+                  <div className="absolute bottom-3 left-3 bg-[#006b5b]/90 text-white text-[10px] px-2 py-0.5 rounded">
+                    Nitidez extrema • Sin artefactos • Calidad cinematográfica
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 text-sm text-emotional">
+              Saltarte este paso es la razón #1 por la que el contenido se ve "hecho con IA". 
+              Hacer este paso es la razón #1 por la que el contenido se ve hecho por una agencia.
+            </div>
+          </div>
+
+          {/* Tools */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
             {[
               { logo: "OpenArt Upscaler.png", name: "OpenArt", desc: "Rápido y balanceado" },
@@ -426,10 +477,10 @@ function App() {
               { logo: "Lupa AI.png", name: "Lupa AI", desc: "Más realista en rostros" },
               { logo: "Google Flow.jpg", name: "Google Flow", desc: "Escalado en lote" }
             ].map((tool, i) => (
-              <div key={i} className="premium-card p-6 hover:border-[#006b5b]/30 transition-all">
+              <div key={i} className="premium-card p-6 hover:border-[#006b5b]/30 transition-all text-center">
                 <div className="h-9 w-9 mx-auto mb-4"><img src={`/assets/logos/${tool.logo}`} className="h-full w-auto mx-auto" /></div>
-                <div className="font-semibold text-center">{tool.name}</div>
-                <div className="text-xs text-center text-neutral mt-1">{tool.desc}</div>
+                <div className="font-semibold">{tool.name}</div>
+                <div className="text-xs text-neutral mt-1">{tool.desc}</div>
               </div>
             ))}
           </div>
