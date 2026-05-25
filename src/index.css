@@ -1,0 +1,223 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   BRAND DESIGN SYSTEM - Modo Creador
+   Strict adherence to provided brand guidelines
+   ============================================ */
+
+:root {
+  /* Brand Colors */
+  --bg: #f5f1ea;
+  --card: #ffffff;
+  --cta: #006b5b;
+  --cta-hover: #005a4d;
+  --text-strong: #101820;
+  --emotional: #3d2c2e;
+  --highlight: #ffcd00;
+  --neutral: #a89f94;
+  --dark: #101820;
+
+  /* Typography - Helvetica premium feel */
+  --font-sans: 'Helvetica Neue', Helvetica, Arial, system-ui, -apple-system, sans-serif;
+  
+  /* Spacing & Rhythm */
+  --section-gap: 6rem;
+}
+
+/* Base */
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text-strong);
+  }
+
+  /* Premium heading style */
+  h1, h2, h3 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+}
+
+/* ============================================
+   PREMIUM COMPONENTS
+   ============================================ */
+
+@layer components {
+  /* Section container with generous breathing room */
+  .section {
+    padding-top: var(--section-gap);
+    padding-bottom: var(--section-gap);
+  }
+
+  /* Elegant card */
+  .premium-card {
+    background-color: var(--card);
+    border-radius: 20px;
+    box-shadow: 0 10px 40px -15px rgba(16, 24, 32, 0.08), 
+                0 4px 6px -1px rgba(16, 24, 32, 0.05);
+    transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), 
+                box-shadow 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .premium-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 50px -15px rgba(16, 24, 32, 0.12);
+  }
+
+  /* Tool / Option Card */
+  .tool-card {
+    @apply premium-card p-6 border border-transparent;
+    transition: all 0.2s cubic-bezier(0.23, 1.0, 0.32, 1);
+  }
+
+  .tool-card:hover {
+    border-color: var(--neutral);
+    transform: translateY(-1px);
+  }
+
+  .tool-card.active {
+    border-color: var(--cta);
+    box-shadow: 0 0 0 1px var(--cta);
+  }
+
+  /* Prompt Box - critical "wow" element */
+  .prompt-box {
+    background-color: #f8f5f0;
+    border: 1px solid #e8e3d9;
+    border-radius: 12px;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+
+  /* Primary CTA Button - strict brand */
+  .btn-primary {
+    background-color: var(--cta);
+    color: white;
+    font-weight: 600;
+    padding: 14px 32px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.2s cubic-bezier(0.23, 1.0, 0.32, 1);
+    font-size: 15px;
+    letter-spacing: -0.01em;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--cta-hover);
+    transform: translateY(-1px);
+  }
+
+  /* Secondary / Ghost button */
+  .btn-secondary {
+    background-color: transparent;
+    color: var(--text-strong);
+    border: 1px solid var(--neutral);
+    font-weight: 500;
+    padding: 12px 28px;
+    border-radius: 9999px;
+    transition: all 0.2s ease;
+  }
+
+  .btn-secondary:hover {
+    background-color: rgba(0,0,0,0.03);
+    border-color: var(--text-strong);
+  }
+
+  /* Copy Button - the magic interaction */
+  .copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 1px solid #d9d3c7;
+    padding: 6px 14px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-strong);
+    transition: all 0.15s ease;
+  }
+
+  .copy-btn:hover {
+    border-color: var(--cta);
+    color: var(--cta);
+  }
+
+  .copy-btn.copied {
+    background: #006b5b;
+    color: white;
+    border-color: #006b5b;
+  }
+
+  /* Step number */
+  .step-number {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    color: var(--highlight);
+    background: var(--text-strong);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+  }
+
+  /* Highlight text */
+  .text-highlight {
+    color: var(--cta);
+  }
+
+  .text-gold {
+    color: var(--highlight);
+  }
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .section-title {
+    font-size: 2.25rem;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .section-title {
+      font-size: 1.875rem;
+    }
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Focus visible for accessibility */
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--cta);
+  outline-offset: 2px;
+}
