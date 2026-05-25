@@ -1,16 +1,14 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Copy, Check, ArrowRight } from 'lucide-react'
+import { Copy, Check, ArrowRight, Play, Pause } from 'lucide-react'
 
-// Reusable high-quality Copy Button with Framer Motion
-function CopyButton({ text, label = "Copiar" }: { text: string; label?: string }) {
+// SPECTACULAR Copy Button - "Efecto Increíble" version
+function CopyButton({ text, label = "Copiar prompt" }: { text: string; label?: string }) {
   const [copied, setCopied] = useState(false)
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(text)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2400)
     } catch {
       const ta = document.createElement('textarea')
       ta.value = text
@@ -18,25 +16,129 @@ function CopyButton({ text, label = "Copiar" }: { text: string; label?: string }
       ta.select()
       document.execCommand('copy')
       document.body.removeChild(ta)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2400)
     }
+
+    setCopied(true)
+
+    // Reset after nice duration
+    setTimeout(() => setCopied(false), 2600)
   }
 
   return (
-    <button onClick={handleCopy} className={`copy-btn ${copied ? 'copied' : ''}`}>
+    <button
+      onClick={handleCopy}
+      disabled={copied}
+      className={`group relative overflow-hidden rounded-full border px-5 py-2 text-sm font-medium transition-all active:scale-[0.985] ${
+        copied 
+          ? 'border-[#006b5b] bg-[#006b5b] text-white shadow-lg' 
+          : 'border-[#d9d3c7] bg-white text-[#101820] hover:border-[#006b5b] hover:text-[#006b5b]'
+      }`}
+    >
       <AnimatePresence mode="wait">
         {copied ? (
-          <motion.span key="done" initial={{opacity:0, y:3}} animate={{opacity:1, y:0}} exit={{opacity:0}} className="flex items-center gap-1.5">
-            <Check size={15}/> Copiado
-          </motion.span>
+          <motion.div
+            key="success"
+            initial={{ opacity: 0, y: 8, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            className="flex items-center gap-2"
+          >
+            <motion.div
+              animate={{ rotate: [0, 15, -10, 0], scale: [1, 1.2, 1] }}
+              transition={{ duration: 0.6 }}
+            >
+              <Check size={17} />
+            </motion.div>
+            <span className="font-semibold tracking-tight">¡Copiado al portapapeles!</span>
+          </motion.div>
         ) : (
-          <motion.span key="copy" initial={{opacity:0}} animate={{opacity:1}} className="flex items-center gap-1.5">
-            <Copy size={15}/> {label}
-          </motion.span>
+          <motion.div
+            key="default"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex items-center gap-2"
+          >
+            <Copy size={16} className="transition-transform group-hover:-translate-y-px" />
+            <span>{label}</span>
+          </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Subtle shine effect on success */}
+      {copied && (
+        <motion.div
+          initial={{ x: "-100%" }}
+          animate={{ x: "200%" }}
+          transition={{ duration: 0.9, ease: "easeInOut" }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+        />
+      )}
     </button>
+  )
+}
+
+// Beautiful Reference → Result visual block (exactly as user requested)
+function ImageResultPair({ 
+  referenceSrc, 
+  resultSrc, 
+  prompt, 
+  title 
+}: { 
+  referenceSrc: string; 
+  resultSrc: string; 
+  prompt: string; 
+  title: string;
+}) {
+  return (
+    <div className="premium-card p-8">
+      <div className="mb-4 flex items-center justify-between">
+        <div>
+          <div className="text-xs uppercase tracking-[2px] text-neutral font-semibold">Referencia → Resultado Real</div>
+          <div className="font-semibold text-xl tracking-tight">{title}</div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        {/* Reference (Base) */}
+        <div>
+          <div className="text-[10px] tracking-wider text-neutral mb-2 pl-1">IMAGEN DE REFERENCIA (INPUT)</div>
+          <div className="relative rounded-2xl overflow-hidden border border-[#d9d3c7] aspect-[16/10] bg-[#f8f5f0]">
+            <img 
+              src={referenceSrc} 
+              alt="Referencia" 
+              className="absolute inset-0 w-full h-full object-cover" 
+            />
+          </div>
+        </div>
+
+        {/* Generated Result */}
+        <div>
+          <div className="text-[10px] tracking-wider text-neutral mb-2 pl-1 flex items-center gap-2">
+            RESULTADO GENERADO CON IA
+            <span className="inline-block w-2 h-2 rounded-full bg-[#006b5b]" />
+          </div>
+          <div className="relative rounded-2xl overflow-hidden border border-[#006b5b]/30 shadow-lg aspect-[16/10] bg-[#f8f5f0]">
+            <img 
+              src={resultSrc} 
+              alt="Resultado generado" 
+              className="absolute inset-0 w-full h-full object-cover" 
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Prompt below the images - exactly what the user asked */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-xs font-semibold tracking-[1px] text-neutral">PROMPT UTILIZADO PARA GENERAR ESTE RESULTADO</span>
+          <CopyButton text={prompt} label="Copiar prompt exacto" />
+        </div>
+        <div className="prompt-box p-5 text-[13.5px] leading-relaxed text-[#2c2522] border-l-4 border-[#006b5b]">
+          {prompt}
+        </div>
+      </div>
+    </div>
   )
 }
 
@@ -73,6 +175,38 @@ function ToolOption({ logo, name, desc, features, prompt }: any) {
 }
 
 function App() {
+  // State for interactive tool selection in Paso 1
+  const [activeTool, setActiveTool] = useState<'nano' | 'flux' | 'seedream' | 'chatgpt'>('nano')
+
+  const toolData = {
+    nano: {
+      name: "NanoBanana Pro",
+      desc: "OPCIÓN A — RECOMENDADA",
+      features: ["Máxima precisión de identidad facial", "Piel RAW fotorrealista", "Soporta múltiples ángulos", "Ideal para UGC premium"],
+      prompt: "Retrato fotorrealista 85mm f/1.4 RAW de esta persona exacta, misma identidad, mismo cabello, mismas proporciones. Iluminación de estudio suave, fondo blanco limpio, micro-detalle alto con textura de piel real y poros. Preservar estructura facial con precisión."
+    },
+    flux: {
+      name: "Flux 2.0",
+      desc: "OPCIÓN B",
+      features: ["Iluminación cinematográfica superior", "Excelente en poros y micro-texturas", "Tonalidad natural y emocional"],
+      prompt: "Crea un retrato hiperrealista de esta persona con iluminación suave cinematográfica, estética de profundidad 85mm, textura RAW, arrugas y poros naturales. Preservar identidad exacta con realismo HDR."
+    },
+    seedream: {
+      name: "Seedream 4",
+      desc: "OPCIÓN C",
+      features: ["Máxima nitidez en close-ups", "Textura de piel más fina", "Precisión extrema en identidad"],
+      prompt: "Genera un retrato frontal RAW con textura de piel fotorrealista, asimetría natural y claridad alta. Mantener identidad exacta, forma del cabello y geometría facial."
+    },
+    chatgpt: {
+      name: "ChatGPT 2",
+      desc: "OPCIÓN D — MÁS ACCESIBLE",
+      features: ["Fácil de usar para principiantes", "Buena para iteraciones rápidas", "Calidad sólida para empezar"],
+      prompt: "Genera un retrato hiperrealista de esta persona conservando identidad facial exacta. Estilo fotografía profesional 8K, iluminación de estudio, fondo neutro, alta nitidez en rostro y textura de piel real."
+    }
+  }
+
+  const currentTool = toolData[activeTool]
+
   // Exact copy from user
   const copy = {
     paso1: {
@@ -148,12 +282,17 @@ function App() {
 
       {/* SISTEMA */}
       <section id="sistema" className="max-w-6xl mx-auto px-6 pb-24">
-        <div className="text-center mb-14">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-14"
+        >
           <div className="text-cta text-xs tracking-[3px] mb-2">EL SISTEMA COMPLETO PARA CLONARTE CON IA</div>
           <h2 className="section-title tracking-[-1.5px]">Esta guía transforma una simple selfie<br />en un avatar que habla, se mueve y produce contenido.</h2>
-        </div>
+        </motion.div>
 
-        {/* PASO 1 */}
+        {/* PASO 1 - RESTRUCTURED: Reference → Result → Prompt (as requested) */}
         <div className="mb-20">
           <div className="flex gap-4 items-baseline mb-6">
             <div className="text-[72px] font-semibold text-highlight leading-none tracking-[-3px]">01</div>
@@ -167,97 +306,277 @@ function App() {
             El rostro define si tu clon es creíble o no. Un retrato hiperrealista que conserve tu identidad exacta es lo que asegura consistencia en cada imagen, video y animación que crees después.<br />Por eso se usan herramientas especializadas en preservación de identidad, micro-detalle de piel y calidad RAW fotográfica.
           </div>
 
-          {/* Proof images */}
-          <div className="grid md:grid-cols-3 gap-3 mb-8">
-            <img src="/assets/images/UGC_Premium__A_photorealistic_close-up_202605251403.jpeg" className="rounded-2xl w-full" alt="UGC Premium" />
-            <img src="/assets/images/Autoridad__A_photorealistic_close-up_of_202605251404.jpeg" className="rounded-2xl w-full" alt="Autoridad" />
-            <img src="/assets/images/Calidad_RAW_fotográfica__A_photorealistic_202605251403.jpeg" className="rounded-2xl w-full" alt="Calidad RAW" />
+          {/* Reference Gallery */}
+          <div className="mb-6">
+            <div className="text-xs uppercase tracking-[2px] text-neutral mb-3">IMÁGENES DE REFERENCIA (LOS 4 INPUTS ORIGINALES)</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {[
+                "/assets/images/1.jpeg",
+                "/assets/images/2.png",
+                "/assets/images/3.jpeg",
+                "/assets/images/4.jpeg"
+              ].map((src, i) => (
+                <div key={i} className="rounded-2xl overflow-hidden border border-[#d9d3c7]">
+                  <img src={src} alt={`Referencia ${i+1}`} className="w-full aspect-[16/10] object-cover" />
+                </div>
+              ))}
+            </div>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            <ToolOption logo="nano banana pro.jpg" name="NanoBanana Pro" desc="OPCIÓN A — POR DEFECTO" features={["Líder en exactitud de rostro","Renderiza piel RAW fotorrealista","Soporta múltiples ángulos","Ideal para fotorrealismo en redes"]} prompt={copy.paso1.nano} />
-            <ToolOption logo="Flux 2.0.jpg" name="Flux 2.0" desc="OPCIÓN B" features={["Simulación de iluminación cinematográfica","Excelente con piel, poros, micro-imperfecciones","Color y tonalidad natural"]} prompt={copy.paso1.flux} />
-            <ToolOption logo="Seedream 4.png" name="Seedream 4" desc="OPCIÓN C" features={["Modelo de piel y textura más fino","Excelente para fotografía profesional cerrada","Mantiene identidad con precisión extrema"]} prompt={copy.paso1.seedream} />
-            <ToolOption logo="ChatGPT 2.png" name="ChatGPT 2" desc="OPCIÓN D" features={["Integración nativa con generación de imagen","Rápida iteración con lenguaje natural","Ideal si recién estás empezando"]} prompt={copy.paso1.chatgpt} />
+          <p className="text-sm text-emotional mb-8">Estas 4 imágenes son las referencias base. Todo lo que ves abajo se generó a partir de ellas usando los prompts + herramientas.</p>
+
+          {/* === VISUAL PAIRS: Reference + Result + Prompt (CORE REQUEST) === */}
+          <div className="space-y-8 mb-10">
+            <ImageResultPair 
+              referenceSrc="/assets/images/1.jpeg"
+              resultSrc="/assets/images/UGC_que_vende__A_medium_202605251403.jpeg"
+              prompt="Retrato fotorrealista 85mm f/1.4 RAW de esta persona exacta, misma identidad, mismo cabello, mismas proporciones. Iluminación de estudio suave, fondo blanco limpio, micro-detalle alto con textura de piel real y poros. Preservar estructura facial con precisión."
+              title="UGC que vende — Generado con NanoBanana Pro"
+            />
+
+            <ImageResultPair 
+              referenceSrc="/assets/images/3.jpeg"
+              resultSrc="/assets/images/Autoridad__A_photorealistic_close-up_of_202605251404.jpeg"
+              prompt="Crea un retrato hiperrealista de esta persona con iluminación suave cinematográfica, estética de profundidad 85mm, textura RAW, arrugas y poros naturales. Preservar identidad exacta con realismo HDR."
+              title="Presencia de Autoridad — Generado con Flux 2.0"
+            />
           </div>
 
-          <div className="mt-5 text-sm text-emotional border-l-4 border-cta pl-4">Si la identidad falla en la base, todo el clon falla. El video, la voz, el contenido de autoridad —todo depende de un rostro consistente y creíble.</div>
+          <div className="text-sm text-emotional border-l-4 border-cta pl-4">
+            Si la identidad falla en la base, todo el clon falla. El video, la voz, el contenido de autoridad —todo depende de un rostro consistente y creíble.
+          </div>
+
+          {/* TOOLS AS SELECTABLE OPTIONS - Interactive (as requested) */}
+          <div className="mt-10">
+            <div className="text-xs uppercase tracking-[2px] text-neutral mb-3">ELIGE LA HERRAMIENTA</div>
+            
+            {/* Tool selector pills */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {(['nano', 'flux', 'seedream', 'chatgpt'] as const).map((key) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveTool(key)}
+                  className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all border ${
+                    activeTool === key 
+                      ? 'bg-[#006b5b] text-white border-[#006b5b] shadow-sm' 
+                      : 'border-[#d9d3c7] hover:border-[#006b5b] hover:text-[#006b5b] bg-white'
+                  }`}
+                >
+                  {toolData[key].name}
+                </button>
+              ))}
+            </div>
+
+            {/* Active Tool Details - Clean and focused */}
+            <div className="premium-card p-8">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="text-2xl font-semibold tracking-tight">{currentTool.name}</div>
+                <div className="text-xs px-3 py-1 rounded-full bg-[#f8f5f0] text-neutral border">{currentTool.desc}</div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8">
+                <div>
+                  <div className="uppercase text-xs tracking-wider text-neutral mb-3">VENTAJAS</div>
+                  <ul className="space-y-2 text-[15px] text-[#2f2724]">
+                    {currentTool.features.map((f, i) => (
+                      <li key={i} className="flex gap-2">• {f}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="uppercase text-xs tracking-wider text-neutral">PROMPT RECOMENDADO</div>
+                    <CopyButton text={currentTool.prompt} label="Copiar" />
+                  </div>
+                  <div className="prompt-box p-5 text-[13.5px] leading-relaxed text-[#2c2522]">
+                    {currentTool.prompt}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* PASO 2 */}
+        {/* PASO 2 - DATASET VISUAL (improved) */}
         <div className="mb-20">
           <div className="flex gap-4 items-baseline mb-6">
             <div className="text-[72px] font-semibold text-highlight leading-none tracking-[-3px]">02</div>
             <div className="text-4xl font-semibold tracking-tight">PASO 2 — CONSTRUIR TU DATASET VISUAL</div>
           </div>
-          <p className="max-w-3xl text-[15.5px] mb-8">Una sola foto no alcanza. Necesitas entre 10 y 20 imágenes del mismo rostro clonado en distintas poses, outfits, ángulos y escenarios. Una sola imagen se ve tiesa. Un dataset le da flexibilidad a tu clon.</p>
 
-          <div className="premium-card p-8 mb-6">
-            <div className="flex justify-between mb-3">
+          <p className="max-w-3xl text-[15.5px] mb-8">
+            Una sola foto no alcanza. Necesitas entre 10 y 20 imágenes del mismo rostro clonado en distintas poses, outfits, ángulos y escenarios. 
+            Una sola imagen se ve tiesa. Un dataset le da flexibilidad a tu clon: escenas caminando, hablando, gesticulando, en distintos moods.
+          </p>
+
+          {/* Visual examples of dataset variations */}
+          <div className="grid md:grid-cols-3 gap-4 mb-8">
+            <div className="premium-card p-4">
+              <img src="/assets/images/Atuendo_de_Dataset__A_photorealistic_202605251403.jpeg" className="rounded-xl w-full mb-3" alt="Dataset outfit" />
+              <div className="text-xs text-neutral">Outfit / Ángulo variado</div>
+            </div>
+            <div className="premium-card p-4">
+              <img src="/assets/images/Ángulo_de_Dataset__A_photorealistic_202605251403.jpeg" className="rounded-xl w-full mb-3" alt="Different angle" />
+              <div className="text-xs text-neutral">Ángulo y expresión</div>
+            </div>
+            <div className="premium-card p-4">
+              <img src="/assets/images/Campañas_cinematográficas__A_cinematic_medium_202605251404.jpeg" className="rounded-xl w-full mb-3" alt="Cinematic context" />
+              <div className="text-xs text-neutral">Contexto cinematográfico</div>
+            </div>
+          </div>
+
+          <div className="premium-card p-8">
+            <div className="flex items-center justify-between mb-3">
               <span className="text-xs tracking-wider font-semibold text-neutral">PROMPT EJEMPLO PARA DATASET</span>
               <CopyButton text={copy.paso2} label="Copiar prompt" />
             </div>
             <div className="prompt-box p-6 text-[13.5px]">{copy.paso2}</div>
           </div>
 
-          <div className="text-sm text-emotional">Variaciones que tu dataset debe incluir: De pie / sentado / caminando — Sonriendo / serio / hablando — Outfit casual / oficina / elegante — Ángulos: frontal, ¾, perfil — Interior y exterior.</div>
+          <div className="mt-4 text-sm text-emotional">
+            Variaciones que tu dataset debe incluir: De pie / sentado / caminando — Sonriendo / serio / hablando — Outfit casual / oficina / elegante — Ángulos: frontal, ¾, perfil — Interior y exterior.
+          </div>
         </div>
 
-        {/* PASO 3 */}
+        {/* PASO 3 - UPSALE 4K-8K (improved) */}
         <div className="mb-20">
           <div className="flex gap-4 items-baseline mb-6">
             <div className="text-[72px] font-semibold text-highlight leading-none tracking-[-3px]">03</div>
             <div className="text-4xl font-semibold tracking-tight">PASO 3 — ESCALAR A 4K–8K (NO NEGOCIABLE)</div>
           </div>
-          <p className="max-w-3xl mb-8">Este paso es lo que separa el contenido amateur del que parece campaña real. Sin resolución 4K+, las herramientas de movimiento generan artefactos, pixelado y se nota la IA al instante.</p>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {["OpenArt Upscaler.png","Magnific AI.jpg","Lupa AI.png","Google Flow.jpg"].map((l, i) => (
-              <div key={i} className="premium-card p-6 text-center">
-                <div className="h-9 w-9 mx-auto mb-3"><img src={`/assets/logos/${l}`} className="h-full w-auto mx-auto" /></div>
-                <div className="font-semibold">{l.replace('.png','').replace('.jpg','')}</div>
+          <p className="max-w-3xl mb-8">
+            Este paso es lo que separa el contenido amateur del que parece campaña real. 
+            Sin resolución 4K+, las herramientas de movimiento generan artefactos, pixelado y se nota la IA al instante.
+          </p>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+            {[
+              { logo: "OpenArt Upscaler.png", name: "OpenArt", desc: "Rápido y balanceado" },
+              { logo: "Magnific AI.jpg", name: "Magnific", desc: "Detalle ultra, poros" },
+              { logo: "Lupa AI.png", name: "Lupa AI", desc: "Más realista en rostros" },
+              { logo: "Google Flow.jpg", name: "Google Flow", desc: "Escalado en lote" }
+            ].map((tool, i) => (
+              <div key={i} className="premium-card p-6 hover:border-[#006b5b]/30 transition-all">
+                <div className="h-9 w-9 mx-auto mb-4"><img src={`/assets/logos/${tool.logo}`} className="h-full w-auto mx-auto" /></div>
+                <div className="font-semibold text-center">{tool.name}</div>
+                <div className="text-xs text-center text-neutral mt-1">{tool.desc}</div>
               </div>
             ))}
           </div>
-          <div className="mt-4 text-xs text-neutral">Instrucción: Subir imagen → elegir x4 o x8 → activar modo detalle → exportar en PNG 4K–8K.</div>
+
+          <div className="premium-card p-6 text-sm">
+            <span className="font-semibold">Flujo recomendado:</span> Subir imagen → elegir x4 o x8 → activar modo detalle → exportar en PNG 4K–8K.
+          </div>
         </div>
 
-        {/* PASO 4 */}
+        {/* PASO 4 - VOICE (improved) */}
         <div className="mb-20">
           <div className="flex gap-4 items-baseline mb-6">
             <div className="text-[72px] font-semibold text-highlight leading-none tracking-[-3px]">04</div>
             <div className="text-4xl font-semibold tracking-tight">PASO 4 — CLONAR TU VOZ</div>
           </div>
-          <p>La voz es el alma de tu avatar. Sin voz propia, no eres tú: es un robot. Las herramientas de clonación replican tu tono, tu respiración, tus pausas, tu emoción.</p>
 
-          <div className="grid md:grid-cols-2 gap-4 mt-6">
+          <p className="max-w-3xl mb-8">
+            La voz es el alma de tu avatar. Sin voz propia, no eres tú: es un robot. 
+            Las herramientas de clonación replican tu tono, tu respiración, tus pausas, tu emoción. Una voz clonada bien hecha es lo que hace que la gente te crea.
+          </p>
+
+          <div className="grid md:grid-cols-2 gap-4">
             <div className="premium-card p-7">
-              <div className="flex gap-4"><img src="/assets/logos/ElevenLabs.png" className="h-9" /><div><div className="font-semibold text-lg">ElevenLabs</div><div className="text-xs text-neutral">El estándar de la industria</div></div></div>
-              <ul className="mt-5 text-sm space-y-1 text-emotional">
+              <div className="flex gap-4 mb-4">
+                <img src="/assets/logos/ElevenLabs.png" className="h-9" />
+                <div>
+                  <div className="font-semibold text-lg">ElevenLabs</div>
+                  <div className="text-xs text-neutral">El estándar de la industria</div>
+                </div>
+              </div>
+              <ul className="text-sm space-y-1 text-emotional mb-5">
                 <li>• Replica acento, respiración, micro-pausas</li>
-                <li>• Calidad de estudio</li>
+                <li>• Calidad de estudio profesional</li>
                 <li>• Soporta más de 30 idiomas</li>
               </ul>
-              <div className="mt-5">
-                <CopyButton text={copy.paso4} label="Copiar prompt de voz" />
-              </div>
+              <CopyButton text={copy.paso4} label="Copiar prompt de voz" />
             </div>
+
             <div className="premium-card p-7">
-              <div className="flex gap-4"><img src="/assets/logos/Hedra Voice.png" className="h-9" /><div><div className="font-semibold text-lg">Hedra Voice</div><div className="text-xs text-neutral">Para clones que hablan en video</div></div></div>
-              <p className="mt-4 text-sm text-emotional">Combina voz + sincronización de boca. Ideal para talking-heads.</p>
+              <div className="flex gap-4 mb-4">
+                <img src="/assets/logos/Hedra Voice.png" className="h-9" />
+                <div>
+                  <div className="font-semibold text-lg">Hedra Voice</div>
+                  <div className="text-xs text-neutral">Para clones que hablan en video</div>
+                </div>
+              </div>
+              <p className="text-sm text-emotional mb-5">
+                Combina voz + sincronización de boca. Ideal para talking-heads y contenido UGC que necesita movimiento de labios realista.
+              </p>
+              <div className="text-xs text-neutral">Recomendado cuando vas a generar video con voz.</div>
             </div>
           </div>
         </div>
 
-        {/* PASO 5 */}
+        {/* PASO 5 - WITH REAL VIDEO DEMOS (B) */}
         <div className="mb-20">
           <div className="flex gap-4 items-baseline mb-6">
             <div className="text-[72px] font-semibold text-highlight leading-none tracking-[-3px]">05</div>
-            <div className="text-4xl font-semibold tracking-tight">PASO 5 — IMAGEN A VIDEO</div>
+            <div className="text-4xl font-semibold tracking-tight">PASO 5 — IMAGEN A VIDEO (MOVIMIENTO REAL)</div>
           </div>
-          <p>Aquí es donde tu imagen estática se vuelve un video real.</p>
 
-          <div className="grid md:grid-cols-2 gap-4 mt-6">
+          <p className="max-w-3xl mb-8">Aquí es donde tu imagen estática se vuelve un video real. El movimiento bien hecho hace que la gente jure que estás grabando.</p>
+
+          {/* Video Demonstration - High Impact */}
+          <div className="premium-card p-8 mb-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="text-xs uppercase tracking-[2px] text-[#006b5b] font-semibold">DEMOSTRACIÓN REAL</div>
+              <div className="h-px flex-1 bg-[#e8e3d9]" />
+            </div>
+
+            <div className="text-xl font-semibold mb-6 tracking-tight">De imagen estática a movimiento natural</div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Reference still */}
+              <div>
+                <div className="text-xs tracking-wider text-neutral mb-2">IMAGEN DE REFERENCIA</div>
+                <div className="rounded-2xl overflow-hidden border border-[#d9d3c7]">
+                  <img 
+                    src="/assets/images/UGC_Premium__A_photorealistic_close-up_202605251403.jpeg" 
+                    alt="Referencia" 
+                    className="w-full" 
+                  />
+                </div>
+              </div>
+
+              {/* Generated Video */}
+              <div>
+                <div className="text-xs tracking-wider text-neutral mb-2 flex items-center gap-2">
+                  VIDEO GENERADO CON IA <span className="text-[#006b5b]">• Movimiento real</span>
+                </div>
+                <div className="rounded-2xl overflow-hidden border border-[#006b5b]/30 bg-black">
+                  <video 
+                    src="/assets/videos/demo-movimiento.mp4" 
+                    controls 
+                    playsInline
+                    className="w-full"
+                  />
+                </div>
+                <div className="text-xs text-neutral mt-2">Ejemplo generado con movimiento cinematográfico suave (respiración + micro-giro de cabeza).</div>
+              </div>
+            </div>
+
+            <div className="mt-6 pt-6 border-t border-[#e8e3d9]">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-xs font-semibold tracking-wider text-neutral">PROMPT UTILIZADO PARA EL VIDEO</span>
+                <CopyButton text="Cinematic medium shot of a confident man wearing large tortoiseshell sunglasses. Subtle natural breathing, soft head movement, warm human presence, premium studio lighting, photorealistic motion." label="Copiar prompt de movimiento" />
+              </div>
+              <div className="prompt-box p-4 text-sm">
+                Cinematic medium shot of a confident man wearing large tortoiseshell sunglasses. Subtle natural breathing, soft head movement, warm human presence, premium studio lighting, photorealistic motion.
+              </div>
+            </div>
+          </div>
+
+          {/* Tool options for video */}
+          <div className="grid md:grid-cols-2 gap-4">
             <div className="premium-card p-7">
               <div><img src="/assets/logos/Google VEO 3.1.png" className="h-8 mb-4" /><span className="font-semibold">VEO 3.1</span></div>
               <div className="text-sm mt-3">La mejor para campañas cinematográficas. Control total por JSON.</div>
@@ -279,13 +598,43 @@ function App() {
           </div>
         </div>
 
-        {/* PASO 6 */}
-        <div>
+        {/* PASO 6 - FINAL ASSEMBLY (solid) */}
+        <div className="mb-16">
           <div className="flex gap-4 items-baseline mb-6">
             <div className="text-[72px] font-semibold text-highlight leading-none tracking-[-3px]">06</div>
             <div className="text-4xl font-semibold tracking-tight">PASO 6 — ENSAMBLAJE FINAL</div>
           </div>
-          <p>Exportas el video animado → sincronizas la voz → agregas captions → publicas. Repites el proceso. Tu clon se convierte en una máquina de contenido diaria.</p>
+
+          <p className="max-w-3xl mb-8">
+            Exportas el video animado → sincronizas la voz → agregas captions → publicas. 
+            Repites el proceso. Tu clon se convierte en una máquina de contenido diaria sin que tú salgas en cámara ni una sola vez.
+          </p>
+
+          {/* Simple summary table */}
+          <div className="premium-card p-8">
+            <div className="text-xs uppercase tracking-wider text-neutral mb-4">RESUMEN DEL FLUJO COMPLETO</div>
+            
+            <div className="space-y-3 text-sm">
+              {[
+                ["1", "Crear rostro", "Base de identidad"],
+                ["2", "Construir dataset", "Variedad visual"],
+                ["3", "Upscale 4K-8K", "Listo para video"],
+                ["4", "Clonar voz", "Presencia auténtica"],
+                ["5", "Generar movimiento", "Realismo humano"],
+                ["6", "Ensamblar y publicar", "Contenido de autoridad"]
+              ].map(([num, action, result], i) => (
+                <div key={i} className="flex items-center gap-4 border-b border-[#e8e3d9] pb-2 last:border-0">
+                  <div className="w-6 text-center font-mono text-[#006b5b]">{num}</div>
+                  <div className="flex-1">{action}</div>
+                  <div className="text-neutral text-xs">{result}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-5 text-sm text-emotional">
+            Cada paso construye sobre el anterior. Pasos débiles rompen la ilusión. Pasos fuertes crean un clon perfecto.
+          </div>
         </div>
       </section>
 
