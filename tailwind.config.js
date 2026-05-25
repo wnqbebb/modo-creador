@@ -7,8 +7,12 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Helvetica Neue', 'Helvetica', 'Arial', 'system-ui', 'sans-serif'],
-        heading: ['Helvetica Neue', 'Helvetica', 'Arial', 'system-ui', 'sans-serif'],
+        // Main body - Drowner-like (comfortable, editorial)
+        sans: ['Helvetica Neue', 'Helvetica', 'system-ui', '-apple-system', 'Arial', 'sans-serif'],
+        // Titles - DX Grafik feel (tight, modern, premium)
+        heading: ['Helvetica Neue', 'Helvetica', 'system-ui', 'sans-serif'],
+        // Accents / mini phrases - Bootzy TM feel (slightly more expressive)
+        accent: ['Helvetica Neue', 'Helvetica', 'system-ui', 'sans-serif'],
       },
       colors: {
         // Brand colors - strict adherence

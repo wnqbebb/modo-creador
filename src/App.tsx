@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Copy, Check, ArrowRight, Play, Pause } from 'lucide-react'
+import { Copy, Check, ArrowRight } from 'lucide-react'
 
 // SPECTACULAR Copy Button - "Efecto Increíble" version
 function CopyButton({ text, label = "Copiar prompt" }: { text: string; label?: string }) {
@@ -92,43 +92,41 @@ function ImageResultPair({
 }) {
   return (
     <div className="premium-card p-8">
-      <div className="mb-4 flex items-center justify-between">
-        <div>
-          <div className="text-xs uppercase tracking-[2px] text-neutral font-semibold">Referencia → Resultado Real</div>
-          <div className="font-semibold text-xl tracking-tight">{title}</div>
-        </div>
+      <div className="mb-4">
+        <div className="text-xs uppercase tracking-[2px] text-neutral font-semibold">Referencia → Resultado Real</div>
+        <div className="font-semibold text-xl tracking-tight mt-1">{title}</div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-        {/* Reference (Base) */}
+        {/* Reference (Base) - Fully visible */}
         <div>
           <div className="text-[10px] tracking-wider text-neutral mb-2 pl-1">IMAGEN DE REFERENCIA (INPUT)</div>
-          <div className="relative rounded-2xl overflow-hidden border border-[#d9d3c7] aspect-[16/10] bg-[#f8f5f0]">
+          <div className="relative rounded-2xl overflow-hidden border border-[#d9d3c7] bg-[#f8f5f0] aspect-[4/3]">
             <img 
               src={referenceSrc} 
               alt="Referencia" 
-              className="absolute inset-0 w-full h-full object-cover" 
+              className="w-full h-full object-contain bg-[#f8f5f0]" 
             />
           </div>
         </div>
 
-        {/* Generated Result */}
+        {/* Generated Result - Fully visible */}
         <div>
           <div className="text-[10px] tracking-wider text-neutral mb-2 pl-1 flex items-center gap-2">
             RESULTADO GENERADO CON IA
             <span className="inline-block w-2 h-2 rounded-full bg-[#006b5b]" />
           </div>
-          <div className="relative rounded-2xl overflow-hidden border border-[#006b5b]/30 shadow-lg aspect-[16/10] bg-[#f8f5f0]">
+          <div className="relative rounded-2xl overflow-hidden border border-[#006b5b]/30 shadow-lg bg-[#f8f5f0] aspect-[4/3]">
             <img 
               src={resultSrc} 
               alt="Resultado generado" 
-              className="absolute inset-0 w-full h-full object-cover" 
+              className="w-full h-full object-contain bg-[#f8f5f0]" 
             />
           </div>
         </div>
       </div>
 
-      {/* Prompt below the images - exactly what the user asked */}
+      {/* Prompt below the images */}
       <div>
         <div className="flex items-center justify-between mb-3">
           <span className="text-xs font-semibold tracking-[1px] text-neutral">PROMPT UTILIZADO PARA GENERAR ESTE RESULTADO</span>
@@ -142,37 +140,7 @@ function ImageResultPair({
   )
 }
 
-function ToolOption({ logo, name, desc, features, prompt }: any) {
-  return (
-    <div className="premium-card p-7 flex flex-col">
-      <div className="flex gap-4 items-center mb-5">
-        <div className="w-11 h-11 rounded-xl overflow-hidden border border-[#e8e3d9] flex-shrink-0 bg-white">
-          <img src={`/assets/logos/${logo}`} alt={name} className="w-full h-full object-cover" />
-        </div>
-        <div>
-          <div className="text-xs text-neutral tracking-wider">{desc}</div>
-          <div className="font-semibold text-xl tracking-tight">{name}</div>
-        </div>
-      </div>
 
-      <div className="flex-1">
-        <ul className="text-[14.5px] space-y-[5px] text-emotional mb-6">
-          {features.map((f: string, i: number) => <li key={i}>• {f}</li>)}
-        </ul>
-      </div>
-
-      <div>
-        <div className="flex justify-between items-center mb-2">
-          <span className="uppercase text-[10px] tracking-[1px] font-semibold text-neutral">Prompt ejemplo</span>
-          <CopyButton text={prompt} />
-        </div>
-        <div className="prompt-box p-4 text-[13px] leading-[1.45] text-[#2c2522]">
-          {prompt}
-        </div>
-      </div>
-    </div>
-  )
-}
 
 function App() {
   // State for interactive tool selection in Paso 1
@@ -525,52 +493,21 @@ function App() {
 
           <p className="max-w-3xl mb-8">Aquí es donde tu imagen estática se vuelve un video real. El movimiento bien hecho hace que la gente jure que estás grabando.</p>
 
-          {/* Video Demonstration - High Impact */}
-          <div className="premium-card p-8 mb-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="text-xs uppercase tracking-[2px] text-[#006b5b] font-semibold">DEMOSTRACIÓN REAL</div>
-              <div className="h-px flex-1 bg-[#e8e3d9]" />
-            </div>
-
-            <div className="text-xl font-semibold mb-6 tracking-tight">De imagen estática a movimiento natural</div>
-
-            <div className="grid md:grid-cols-2 gap-6">
-              {/* Reference still */}
-              <div>
-                <div className="text-xs tracking-wider text-neutral mb-2">IMAGEN DE REFERENCIA</div>
-                <div className="rounded-2xl overflow-hidden border border-[#d9d3c7]">
-                  <img 
-                    src="/assets/images/UGC_Premium__A_photorealistic_close-up_202605251403.jpeg" 
-                    alt="Referencia" 
-                    className="w-full" 
-                  />
-                </div>
+          {/* Visual examples for Image-to-Video (no actual video, as requested) */}
+          <div className="mb-8">
+            <div className="text-xs uppercase tracking-[2px] text-neutral mb-3">EJEMPLOS DE MOVIMIENTO (REFERENCIA → RESULTADO)</div>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="premium-card p-4">
+                <div className="text-[10px] text-neutral mb-2">REFERENCIA</div>
+                <img src="/assets/images/1.jpeg" className="rounded-xl w-full mb-3" alt="Referencia" />
+                <div className="text-[10px] text-neutral mb-1">RESULTADO CON MOVIMIENTO</div>
+                <img src="/assets/images/Campañas_cinematográficas__A_cinematic_medium_202605251404.jpeg" className="rounded-xl w-full" alt="Con movimiento" />
               </div>
-
-              {/* Generated Video */}
-              <div>
-                <div className="text-xs tracking-wider text-neutral mb-2 flex items-center gap-2">
-                  VIDEO GENERADO CON IA <span className="text-[#006b5b]">• Movimiento real</span>
-                </div>
-                <div className="rounded-2xl overflow-hidden border border-[#006b5b]/30 bg-black">
-                  <video 
-                    src="/assets/videos/demo-movimiento.mp4" 
-                    controls 
-                    playsInline
-                    className="w-full"
-                  />
-                </div>
-                <div className="text-xs text-neutral mt-2">Ejemplo generado con movimiento cinematográfico suave (respiración + micro-giro de cabeza).</div>
-              </div>
-            </div>
-
-            <div className="mt-6 pt-6 border-t border-[#e8e3d9]">
-              <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-semibold tracking-wider text-neutral">PROMPT UTILIZADO PARA EL VIDEO</span>
-                <CopyButton text="Cinematic medium shot of a confident man wearing large tortoiseshell sunglasses. Subtle natural breathing, soft head movement, warm human presence, premium studio lighting, photorealistic motion." label="Copiar prompt de movimiento" />
-              </div>
-              <div className="prompt-box p-4 text-sm">
-                Cinematic medium shot of a confident man wearing large tortoiseshell sunglasses. Subtle natural breathing, soft head movement, warm human presence, premium studio lighting, photorealistic motion.
+              <div className="premium-card p-4">
+                <div className="text-[10px] text-neutral mb-2">REFERENCIA</div>
+                <img src="/assets/images/3.jpeg" className="rounded-xl w-full mb-3" alt="Referencia" />
+                <div className="text-[10px] text-neutral mb-1">RESULTADO CON MOVIMIENTO</div>
+                <img src="/assets/images/Detalle_de_Upscale__An_extreme_202605251403.jpeg" className="rounded-xl w-full" alt="Con movimiento" />
               </div>
             </div>
           </div>
